@@ -148,7 +148,7 @@ function Ylioppilaslakki(props) {
             polygonOffsetFactor={-10}
             position={[0, -10, 0]}
           >
-            <RenderTexture attach='map' texture={texture}>
+            <RenderTexture attach='map'>
               <PerspectiveCamera makeDefault manual position={[0, 0, 150]} />
               <ambientLight intensity={0.5} />
               <directionalLight position={[10, 10, 5]} />
