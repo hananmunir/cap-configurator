@@ -1,9 +1,9 @@
 import { create } from "zustand";
 
 const useTextStore = create((set) => ({
-  textFrontLeft: "",
-  textFrontRight: "",
-  textBack: "",
+  textFrontLeft: "Text Here",
+  textFrontRight: "Text Here",
+  textBack: "Text Here",
   font: "/Fonts/textType1.json", // Default font path
   setTextFrontLeft: (text) => set({ textFrontLeft: text }),
   setTextFrontRight: (text) => set({ textFrontRight: text }),

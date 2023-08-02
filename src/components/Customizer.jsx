@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { useColorStore } from "../Utils/store";
 import { useTextStore } from "../Utils/textStore";
 
@@ -21,7 +21,6 @@ const Fonts = [
 ];
 
 const App = () => {
-
   const setActiveColor = useColorStore((state) => state.setActiveColor);
 
   const textFrontLeft = useTextStore((state) => state.textFrontLeft);
@@ -34,33 +33,32 @@ const App = () => {
     const selectedFontPath = event.target.value;
     useTextStore.setState({ font: selectedFontPath });
   };
- 
+
   return (
     <div className='app-container'>
       <div className='sidebar'>
         <h2>Fonts</h2>
         <select onChange={handleFontChange} value={font}>
-        {Fonts.map((font) => (
-          <option key={font.path} value={font.path}>
-            {font.name}
-          </option>
-        ))}
+          {Fonts.map((font) => (
+            <option key={font.path} value={font.path}>
+              {font.name}
+            </option>
+          ))}
         </select>
-
 
         <h2>Colors</h2>
         <ul>
           {Colors.map((color, index) => (
             <li key={index}>
-              <div style={{
-                backgroundColor: color.hex,
-                width: "20px",
-                height: "20px",
-                borderRadius: "50%",
-                background: color,
-              }}
-              onClick={() => setActiveColor(color)}
-
+              <div
+                style={{
+                  backgroundColor: color.hex,
+                  width: "20px",
+                  height: "20px",
+                  borderRadius: "50%",
+                  background: color,
+                }}
+                onClick={() => setActiveColor(color)}
               ></div>
             </li>
           ))}
@@ -68,24 +66,37 @@ const App = () => {
 
         <h2>Text</h2>
         <div>
-        <input
-          type="text"
-          placeholder="Front Left"
-          value={textFrontLeft}
-          onChange={(e) => useTextStore.setState({ textFrontLeft: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Front Right"
-          value={textFrontRight}
-          onChange={(e) => useTextStore.setState({ textFrontRight: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Back"
-          value={textBack}
-          onChange={(e) => useTextStore.setState({ textBack: e.target.value })}
-        />
+          <label>Front Right</label>
+          <input
+            type='text'
+            placeholder='Front Left'
+            value={textFrontLeft}
+            onChange={(e) =>
+              useTextStore.setState({ textFrontLeft: e.target.value })
+            }
+            maxLength={13}
+          />
+          <label> Front Right</label>
+          <input
+            type='text'
+            placeholder='Front Right'
+            value={textFrontRight}
+            onChange={(e) =>
+              useTextStore.setState({ textFrontRight: e.target.value })
+            }
+            max={13}
+            maxLength={13}
+          />
+          <label>Back</label>
+          <input
+            type='text'
+            placeholder='Back'
+            value={textBack}
+            onChange={(e) =>
+              useTextStore.setState({ textBack: e.target.value })
+            }
+            maxLength={30}
+          />
         </div>
       </div>
     </div>

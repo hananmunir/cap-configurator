@@ -11,7 +11,7 @@ const ExperienceYlioppilaslakki = () => {
         enableDamping
         dampingFactor={0.1}
         //rotateSpeed={0.2}
-        minDistance={2} // Set minimum distance for zooming in
+        //minDistance={2} // Set minimum distance for zooming in
         maxDistance={8} // Set maximum distance for zooming out
       />
       <Stage intensity={0.6} castShadow={false}>

@@ -19,6 +19,7 @@ import {
   Html,
   Text3D,
   Sky,
+  Center,
 } from "@react-three/drei";
 import { useControls } from "leva";
 import { useColorStore } from "../Utils/store";
@@ -26,13 +27,11 @@ import { useTextStore } from "../Utils/textStore";
 
 import * as THREE from "three";
 function Ylioppilaslakki(props) {
-
   const activeColor = useColorStore((state) => state.activeColor);
   const textFrontLeft = useTextStore((state) => state.textFrontLeft);
   const textFrontRight = useTextStore((state) => state.textFrontRight);
   const textBack = useTextStore((state) => state.textBack);
   const font = useTextStore((state) => state.font);
-
 
   const [customization, setCustomization] = useState({
     badge: "fi",
@@ -46,72 +45,23 @@ function Ylioppilaslakki(props) {
   });
   const { nodes, materials } = useGLTF("/models/cap_version_9.gltf");
 
-  const texture = new THREE.TextureLoader().load(
-    "/textures/fabric/Fabric_Knitted_006_basecolor.jpg"
-  );
+  const texture = new THREE.TextureLoader().load("/texture.jpg");
 
   const { pos, height, rotation } = useControls({
     //{"pos":[-0.3099999999999997,0.36000000000000065,-0.46]}
-    pos: { value: [-0.391, 0.36, -0.46], step: 0.01 },
+    pos: {
+      value: [-0.600000000000002, -1, 0],
+      step: 0.1,
+    },
     height: { value: 0.1, min: 0, max: 1, step: 0.01 },
-    rotation: { value: [0, 0, 0], step: 0.1 },
+    rotation: {
+      value: [3.0099999999999967, -2.68, -0.1199999999999992],
+      step: 0.01,
+    },
   });
 
   return (
     <group {...props} dispose={null}>
-      {/* <Text3D
-        font={"/Fonts/Roboto_Regular.json"}
-        size={0.1}
-        position={pos}
-        height={height}
-        bevelEnabled={true}
-        bevelThickness={0.01}
-        // bend text
-
-
-      >
-        Hello world!
-        <meshStandardMaterial attach='material' map={texture} />
-      </Text3D> */}
-
-      {/* <mesh>
-        <planeGeometry />
-        <Decal position={pos} rotation={rotation} scale={1}>
-          <meshStandardMaterial
-            roughness={0.1}
-            transparent
-            polygonOffset
-            polygonOffsetFactor={-10}
-            position={[0, -10, 0]}
-          >
-            <RenderTexture attach='map'>
-              <PerspectiveCamera makeDefault manual position={[0, 0, 50]} />
-              <ambientLight intensity={0.5} />
-              <directionalLight position={[10, 10, 5]} />
-              <Text
-                rotation={[0, 0, 0]}
-                fontSize={10}
-                color='red'
-                position={[0, 0, 0]}
-              >
-                Some
-              </Text>
-         
-            </RenderTexture>
-          </meshStandardMaterial>
-        </Decal>{" "}
-      </mesh> */}
-      {/* <mesh
-        geometry={nodes.Retopo_Text001.geometry}
-        material={materials["Material.002"]}
-        position={[0, 0, 0.003]}
-      />
-      <mesh
-        geometry={nodes.Retopo_Text002.geometry}
-        material={materials["Material.002"]}
-        position={[0, 0, -0.002]}
-      /> */}
-
       {/* decorative ribbon */}
       <mesh
         geometry={nodes.gold001.geometry}
@@ -150,81 +100,91 @@ function Ylioppilaslakki(props) {
         geometry={nodes.the_middle_part_.geometry}
         material={materials["outside black"]}
       >
-        <Decal position={[-0.391,0.36,-0.46]} rotation={[0,0,0]} scale={3}>
+        <Decal position={[-0.391, 0.36, -0.46]} rotation={[0, 0, 0]} scale={3}>
           <meshStandardMaterial
             roughness={0.1}
             transparent
             polygonOffset
             polygonOffsetFactor={-10}
-            position={[0, -10, 0]}
+            position={[0, -10, 1]}
           >
             <RenderTexture attach='map'>
-              <PerspectiveCamera makeDefault manual position={[0, 0, 150]} />
-              <ambientLight intensity={0.5} />
-              <directionalLight position={[10, 10, 5]} />
+              <PerspectiveCamera
+                makeDefault
+                manual
+                position={[0, 0, 150]}
+                rotation={[0, 0, -3.14]}
+              />
+              <ambientLight intensity={0.9} />
+              <Environment preset='city' />
               <Text3D
-                rotation={[0, 0, 0]}
-                size={3}
-                height={0.3}
+                rotation={[3.0099999999999967, -2.68, -0.029999999999999166]}
+                size={2}
+                scale={[1, 1.5, 1]}
+                height={0.15}
                 font={font}
-                position={[0, 0, 1]}
+                position={[-0.600000000000002, 1.3000000000000012, 0]}
               >
-                <meshStandardMaterial attach='material' color={activeColor?.hex} />
+                <meshPhysicalMaterial
+                  attach='material'
+                  metalness={0.1}
+                  roughness={1}
+                  color={activeColor?.hex}
+                  map={texture}
+                />
                 {textFrontLeft}
               </Text3D>
-              {/* <Dodecahedron /> */}
-            </RenderTexture>
-          </meshStandardMaterial>
-        </Decal>
-        <Decal position={[0.20899999999999997,0.36,-0.46]} rotation={[0,0,0]} scale={3}>
-          <meshStandardMaterial
-            roughness={0.1}
-            transparent
-            polygonOffset
-            polygonOffsetFactor={-10}
-            position={[0, -10, 0]}
-          >
-            <RenderTexture attach='map'>
-              <PerspectiveCamera makeDefault manual position={[0, 0, 150]} />
-              <ambientLight intensity={0.5} />
-              <directionalLight position={[10, 10, 5]} />
               <Text3D
-                rotation={[0, 0, 0]}
-                size={3}
-                height={0.3}
+                rotation={[3.0099999999999967, -2.68, -0.1199999999999992]}
+                size={2}
+                scale={[1, 1.5, 1]}
+                height={0.15}
                 font={font}
-                position={[0, 0, 1]}
+                position={[-25, 0.9000000000000008, -0.46]}
               >
-                <meshStandardMaterial attach='material' color={activeColor?.hex} />
+                <meshPhysicalMaterial
+                  attach='material'
+                  metalness={0.1}
+                  roughness={1}
+                  color={activeColor?.hex}
+                  map={texture}
+                />
                 {textFrontRight}
               </Text3D>
-              {/* <Dodecahedron /> */}
             </RenderTexture>
           </meshStandardMaterial>
         </Decal>
-        <Decal position={[-0.391,0.1,-0.46]} rotation={[0,-0.7,0]} scale={3}>
+
+        <Decal position={[-0.391, 0.36, -0.46]} rotation={[0, 0, 0]} scale={3}>
           <meshStandardMaterial
             roughness={0.1}
             transparent
             polygonOffset
             polygonOffsetFactor={-10}
-            position={[0, -10, 0]}
+            position={[0, -10, 1]}
           >
             <RenderTexture attach='map'>
               <PerspectiveCamera makeDefault manual position={[0, 0, 150]} />
-              <ambientLight intensity={0.5} />
-              <directionalLight position={[10, 10, 5]} />
+              <ambientLight intensity={0.9} />
+              <Environment preset='city' />
+
               <Text3D
-                rotation={[0, 0, 0]}
+                rotation={[0, -3.800000000000001, -0.04000000000000003]}
                 size={3}
                 height={0.3}
                 font={font}
-                position={[0, 0, 1]}
+                position={[25.909000000000173, -11.239999999999993, -0.46]}
+                color='black'
               >
-                <meshStandardMaterial attach='material' color={activeColor?.hex} />
+                <meshPhysicalMaterial
+                  attach='material'
+                  metalness={0.1}
+                  roughness={1}
+                  color={activeColor?.hex}
+                  map={texture}
+                />
                 {textBack}
               </Text3D>
-              {/* <Dodecahedron /> */}
             </RenderTexture>
           </meshStandardMaterial>
         </Decal>
