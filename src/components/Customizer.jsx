@@ -1,29 +1,91 @@
 import React, {useState} from "react";
+import { useColorStore } from "../Utils/store";
+import { useTextStore } from "../Utils/textStore";
+
+const Colors = [
+  {
+    hex: "#32CD32",
+  },
+  {
+    hex: "#FDD401",
+  },
+  {
+    hex: "#E8D5AA",
+  },
+];
+
+const Fonts = [
+  { name: "Kuano", path: "/Fonts/textType1.json" },
+  { name: "Tekstaus", path: "/Fonts/textType2.json" },
+  // Add more fonts if needed
+];
 
 const App = () => {
-  const [textFrontLeft, setTextFrontLeft] = useState("");
-  const [textFrontRight, setTextFrontRight] = useState("");
-  const [textBack, setTextBack] = useState("");
+
+  const setActiveColor = useColorStore((state) => state.setActiveColor);
+
+  const textFrontLeft = useTextStore((state) => state.textFrontLeft);
+  const textFrontRight = useTextStore((state) => state.textFrontRight);
+  const textBack = useTextStore((state) => state.textBack);
+
+  const font = useTextStore((state) => state.font); // Get the selected font
+
+  const handleFontChange = (event) => {
+    const selectedFontPath = event.target.value;
+    useTextStore.setState({ font: selectedFontPath });
+  };
+ 
   return (
     <div className='app-container'>
       <div className='sidebar'>
         <h2>Fonts</h2>
-        <ul>
-          <li>Font Name 1</li>
-          <li>Font Name 2</li>
-        </ul>
+        <select onChange={handleFontChange} value={font}>
+        {Fonts.map((font) => (
+          <option key={font.path} value={font.path}>
+            {font.name}
+          </option>
+        ))}
+        </select>
+
 
         <h2>Colors</h2>
         <ul>
-          <li>Color 1</li>
-          <li>Color 2</li>
+          {Colors.map((color, index) => (
+            <li key={index}>
+              <div style={{
+                backgroundColor: color.hex,
+                width: "20px",
+                height: "20px",
+                borderRadius: "50%",
+                background: color,
+              }}
+              onClick={() => setActiveColor(color)}
+
+              ></div>
+            </li>
+          ))}
         </ul>
 
         <h2>Text</h2>
         <div>
-          <input type='text' placeholder='Front Left' />
-          <input type='text' placeholder='Front Right' />
-          <input type='text' placeholder='Back' />
+        <input
+          type="text"
+          placeholder="Front Left"
+          value={textFrontLeft}
+          onChange={(e) => useTextStore.setState({ textFrontLeft: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Front Right"
+          value={textFrontRight}
+          onChange={(e) => useTextStore.setState({ textFrontRight: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Back"
+          value={textBack}
+          onChange={(e) => useTextStore.setState({ textBack: e.target.value })}
+        />
         </div>
       </div>
     </div>

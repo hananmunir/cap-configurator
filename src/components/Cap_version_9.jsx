@@ -21,9 +21,19 @@ import {
   Sky,
 } from "@react-three/drei";
 import { useControls } from "leva";
+import { useColorStore } from "../Utils/store";
+import { useTextStore } from "../Utils/textStore";
 
 import * as THREE from "three";
 function Ylioppilaslakki(props) {
+
+  const activeColor = useColorStore((state) => state.activeColor);
+  const textFrontLeft = useTextStore((state) => state.textFrontLeft);
+  const textFrontRight = useTextStore((state) => state.textFrontRight);
+  const textBack = useTextStore((state) => state.textBack);
+  const font = useTextStore((state) => state.font);
+
+
   const [customization, setCustomization] = useState({
     badge: "fi",
     roundRibbonColor: "",
@@ -91,7 +101,7 @@ function Ylioppilaslakki(props) {
           </meshStandardMaterial>
         </Decal>{" "}
       </mesh> */}
-      <mesh
+      {/* <mesh
         geometry={nodes.Retopo_Text001.geometry}
         material={materials["Material.002"]}
         position={[0, 0, 0.003]}
@@ -100,7 +110,7 @@ function Ylioppilaslakki(props) {
         geometry={nodes.Retopo_Text002.geometry}
         material={materials["Material.002"]}
         position={[0, 0, -0.002]}
-      />
+      /> */}
 
       {/* decorative ribbon */}
       <mesh
@@ -156,17 +166,17 @@ function Ylioppilaslakki(props) {
                 rotation={[0, 0, 0]}
                 size={3}
                 height={0.3}
-                font={"/Fonts/Roboto_Regular.json"}
+                font={font}
                 position={[0, 0, 1]}
               >
-                <meshStandardMaterial attach='material' color={"#ff0f0f"} />
-                Some
+                <meshStandardMaterial attach='material' color={activeColor?.hex} />
+                {textFrontLeft}
               </Text3D>
               {/* <Dodecahedron /> */}
             </RenderTexture>
           </meshStandardMaterial>
         </Decal>
-        <Decal position={[0.15899999999999997,0.36,-0.46]} rotation={[0,0,0]} scale={3}>
+        <Decal position={[0.20899999999999997,0.36,-0.46]} rotation={[0,0,0]} scale={3}>
           <meshStandardMaterial
             roughness={0.1}
             transparent
@@ -182,11 +192,11 @@ function Ylioppilaslakki(props) {
                 rotation={[0, 0, 0]}
                 size={3}
                 height={0.3}
-                font={"/Fonts/Roboto_Regular.json"}
+                font={font}
                 position={[0, 0, 1]}
               >
-                <meshStandardMaterial attach='material' color={"#ff0f0f"} />
-                Some
+                <meshStandardMaterial attach='material' color={activeColor?.hex} />
+                {textFrontRight}
               </Text3D>
               {/* <Dodecahedron /> */}
             </RenderTexture>
@@ -208,11 +218,11 @@ function Ylioppilaslakki(props) {
                 rotation={[0, 0, 0]}
                 size={3}
                 height={0.3}
-                font={"/Fonts/Roboto_Regular.json"}
+                font={font}
                 position={[0, 0, 1]}
               >
-                <meshStandardMaterial attach='material' color={"#ff0f0f"} />
-                Some
+                <meshStandardMaterial attach='material' color={activeColor?.hex} />
+                {textBack}
               </Text3D>
               {/* <Dodecahedron /> */}
             </RenderTexture>

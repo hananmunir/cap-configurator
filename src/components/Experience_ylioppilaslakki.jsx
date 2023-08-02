@@ -14,7 +14,7 @@ const ExperienceYlioppilaslakki = () => {
         minDistance={2} // Set minimum distance for zooming in
         maxDistance={8} // Set maximum distance for zooming out
       />
-      <Stage environment='city' intensity={0.6} castShadow={false}>
+      <Stage intensity={0.6} castShadow={false}>
         <group>
           <Ylioppilaslakki />
         </group>
