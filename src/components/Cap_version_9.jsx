@@ -140,7 +140,7 @@ function Ylioppilaslakki(props) {
         geometry={nodes.the_middle_part_.geometry}
         material={materials["outside black"]}
       >
-        <Decal position={pos} rotation={rotation} scale={3}>
+        <Decal position={[-0.391,0.36,-0.46]} rotation={[0,0,0]} scale={3}>
           <meshStandardMaterial
             roughness={0.1}
             transparent
@@ -165,7 +165,59 @@ function Ylioppilaslakki(props) {
               {/* <Dodecahedron /> */}
             </RenderTexture>
           </meshStandardMaterial>
-        </Decal>{" "}
+        </Decal>
+        <Decal position={[0.15899999999999997,0.36,-0.46]} rotation={[0,0,0]} scale={3}>
+          <meshStandardMaterial
+            roughness={0.1}
+            transparent
+            polygonOffset
+            polygonOffsetFactor={-10}
+            position={[0, -10, 0]}
+          >
+            <RenderTexture attach='map'>
+              <PerspectiveCamera makeDefault manual position={[0, 0, 150]} />
+              <ambientLight intensity={0.5} />
+              <directionalLight position={[10, 10, 5]} />
+              <Text3D
+                rotation={[0, 0, 0]}
+                size={3}
+                height={0.3}
+                font={"/Fonts/Roboto_Regular.json"}
+                position={[0, 0, 1]}
+              >
+                <meshStandardMaterial attach='material' color={"#ff0f0f"} />
+                Some
+              </Text3D>
+              {/* <Dodecahedron /> */}
+            </RenderTexture>
+          </meshStandardMaterial>
+        </Decal>
+        <Decal position={[-0.391,0.1,-0.46]} rotation={[0,-0.7,0]} scale={3}>
+          <meshStandardMaterial
+            roughness={0.1}
+            transparent
+            polygonOffset
+            polygonOffsetFactor={-10}
+            position={[0, -10, 0]}
+          >
+            <RenderTexture attach='map'>
+              <PerspectiveCamera makeDefault manual position={[0, 0, 150]} />
+              <ambientLight intensity={0.5} />
+              <directionalLight position={[10, 10, 5]} />
+              <Text3D
+                rotation={[0, 0, 0]}
+                size={3}
+                height={0.3}
+                font={"/Fonts/Roboto_Regular.json"}
+                position={[0, 0, 1]}
+              >
+                <meshStandardMaterial attach='material' color={"#ff0f0f"} />
+                Some
+              </Text3D>
+              {/* <Dodecahedron /> */}
+            </RenderTexture>
+          </meshStandardMaterial>
+        </Decal>
       </mesh>
       <mesh
         geometry={nodes.the_fornt_part.geometry}

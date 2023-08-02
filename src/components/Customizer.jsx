@@ -1,6 +1,9 @@
-import React from "react";
+import React, {useState} from "react";
 
 const App = () => {
+  const [textFrontLeft, setTextFrontLeft] = useState("");
+  const [textFrontRight, setTextFrontRight] = useState("");
+  const [textBack, setTextBack] = useState("");
   return (
     <div className='app-container'>
       <div className='sidebar'>
