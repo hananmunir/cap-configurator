@@ -27,6 +27,7 @@ const App = () => {
   const textFrontRight = useTextStore((state) => state.textFrontRight);
   const textBack = useTextStore((state) => state.textBack);
 
+  const setFocus = useTextStore((state) => state.setFocus);
   const font = useTextStore((state) => state.font); // Get the selected font
 
   const handleFontChange = (event) => {
@@ -75,6 +76,7 @@ const App = () => {
               useTextStore.setState({ textFrontLeft: e.target.value })
             }
             maxLength={13}
+            onFocus={() => setFocus("frontLeft")}
           />
           <label> Front Right</label>
           <input
@@ -86,6 +88,7 @@ const App = () => {
             }
             max={13}
             maxLength={13}
+            onFocus={() => setFocus("frontRight")}
           />
           <label>Back</label>
           <input
@@ -96,6 +99,7 @@ const App = () => {
               useTextStore.setState({ textBack: e.target.value })
             }
             maxLength={30}
+            onFocus={() => setFocus("back")}
           />
         </div>
       </div>
