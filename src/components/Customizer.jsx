@@ -67,7 +67,7 @@ const App = () => {
 
         <h2>Text</h2>
         <div>
-          <label>Front Right</label>
+          <label>Front Left</label>
           <input
             type='text'
             placeholder='Front Left'

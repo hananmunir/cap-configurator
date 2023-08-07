@@ -24,7 +24,7 @@ const ExperienceYlioppilaslakki = () => {
   }, [focus]);
   return (
     <Suspense fallback={null}>
-      <OrbitControls
+      {/* <OrbitControls
         //autoRotate
         enableDamping
         dampingFactor={0.1}
@@ -32,7 +32,7 @@ const ExperienceYlioppilaslakki = () => {
         //rotateSpeed={0.2}
         //minDistance={2} // Set minimum distance for zooming in
         maxDistance={8} // Set maximum distance for zooming out
-      />
+      /> */}
       <Stage intensity={0.6} castShadow={false}>
         <Ylioppilaslakki />
       </Stage>

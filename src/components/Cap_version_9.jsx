@@ -27,7 +27,7 @@ import { useColorStore } from "../Utils/store";
 import { useTextStore } from "../Utils/textStore";
 
 import * as THREE from "three";
-import { useThree } from "@react-three/fiber";
+import { useThree, useFrame } from "@react-three/fiber";
 import { gsap } from "gsap";
 function Ylioppilaslakki(props) {
   const activeColor = useColorStore((state) => state.activeColor);
@@ -75,16 +75,64 @@ function Ylioppilaslakki(props) {
     if (focus === "back") {
       console.log("back", modelRef.current.rotation.y);
       gsap.to(modelRef.current.rotation, {
+        x: 0,
+        z: 0,
         y: 3.14,
       });
-    } else {
+      gsap.to(modelRef.current.position, {
+        x: 0,
+        z:0.2,
+        y: 0.1,
+        duration: 1,
+      });
+    }
+    else if(focus === "frontRight") {
+      console.log("fronRight", modelRef.current.rotation.y);
+      gsap.to(modelRef.current.rotation, {
+        x: 0,
+        y: -0.3,
+        z: 0,
+      });
+      gsap.to(modelRef.current.position, {
+        x:0,
+        z:0.2,
+        y: 0.1,
+        duration: 1,
+      });
+    }
+    else if(focus === "frontLeft") {
+      console.log("fronLeft", modelRef.current.rotation.y);
+      gsap.to(modelRef.current.rotation, {
+        x: 0,
+        y: 0.3,
+        z: 0,
+      });
+      gsap.to(modelRef.current.position, {
+        x:0,
+        z:0.2,
+        y: 0.1,
+        duration: 1,
+      });
+    }
+     else {
       console.log("front", modelRef.current.rotation.y);
       gsap.to(modelRef.current.rotation, {
+        x: 0,
         y: 0,
+        z: 0,
+      });
+      gsap.to(modelRef.current.position, {
+        x: 0,
+        z:0,
+        y: 0,
+        duration: 1,
       });
     }
   }, [focus]);
   return (
+    <group>
+      <CustomOrbitControl object={modelRef} />
+ 
     <group ref={modelRef} {...props} dispose={null}>
       {/* decorative ribbon */}
       <mesh
@@ -282,9 +330,103 @@ function Ylioppilaslakki(props) {
         visible={customization.badge === "star"}
       />
     </group>
+    </group>
   );
 }
 
 export default Ylioppilaslakki;
 
 useGLTF.preload("./models/cap_version_9.gltf");
+
+const CustomOrbitControl = ({ object }) => {
+  const { gl, camera } = useThree();
+  let isDragging = false;
+  const previousMouse = useRef([0, 0]);
+
+  const onMouseDown = (event) => {
+    isDragging = true;
+    previousMouse.current =
+      event.type === "touchstart"
+        ? [event.touches[0].clientX, event.touches[0].clientY]
+        : [event.clientX, event.clientY];
+  };
+
+  const onMouseUp = () => {
+    isDragging = false;
+  };
+
+  const onMouseMove = (event) => {
+    if (!isDragging) return;
+    const clientX =
+      event.type === "touchmove" ? event.touches[0].clientX : event.clientX;
+    const clientY =
+      event.type === "touchmove" ? event.touches[0].clientY : event.clientY;
+    const deltaMove = [
+      clientX - previousMouse.current[0],
+      clientY - previousMouse.current[1],
+    ];
+
+    const deltaRotationQuaternion = new THREE.Quaternion().setFromEuler(
+      new THREE.Euler(
+        toRadians(deltaMove[1]),
+        toRadians(deltaMove[0]),
+        0,
+        "XYZ"
+      )
+    );
+
+    object.current.quaternion.multiplyQuaternions(
+      deltaRotationQuaternion,
+      object.current.quaternion
+    );
+
+    previousMouse.current = [clientX, clientY];
+  };
+
+  const onWheel = (event) => {
+    // Adjust this value to control zoom speed
+    const zoomSpeed = 0.005;
+  
+    // Calculate the amount of zoom based on the mouse wheel delta
+    const deltaZoom = event.deltaY * zoomSpeed;
+  
+    
+    const newZPosition = camera.position.z - deltaZoom;
+  
+    const minZoom = 2; 
+    const maxZoom = 10; 
+  
+    
+    camera.position.z = Math.min(Math.max(newZPosition, minZoom), maxZoom);
+  };
+
+  const toRadians = (angle) => {
+    return angle * (Math.PI / 180);
+  };
+
+  useEffect(() => {
+    gl.domElement.addEventListener("mousedown", onMouseDown);
+    window.addEventListener("mouseup", onMouseUp);
+    gl.domElement.addEventListener("mousemove", onMouseMove);
+
+    gl.domElement.addEventListener("wheel", onWheel);
+
+    window.addEventListener("touchstart", onMouseDown);
+    window.addEventListener("touchend", onMouseUp);
+    window.addEventListener("touchmove", onMouseMove);
+
+    return () => {
+      gl.domElement.removeEventListener("mousedown", onMouseDown);
+      window.removeEventListener("mouseup", onMouseUp);
+      gl.domElement.removeEventListener("mousemove", onMouseMove);
+
+      gl.domElement.removeEventListener("wheel", onWheel);
+
+      window.removeEventListener("touchstart", onMouseDown);
+      window.removeEventListener("touchend", onMouseUp);
+      window.removeEventListener("touchmove", onMouseMove);
+    };
+  }, []);
+
+  return null;
+};
