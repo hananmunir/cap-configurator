@@ -27,8 +27,11 @@ import { useColorStore } from "../Utils/store";
 import { useTextStore } from "../Utils/textStore";
 
 import * as THREE from "three";
-import { useThree, useFrame } from "@react-three/fiber";
+import { useThree, useFrame, extend } from "@react-three/fiber";
 import { gsap } from "gsap";
+import { Text as Troika } from "troika-three-text";
+// Register Text as a react-three-fiber element
+extend({ Troika });
 function Ylioppilaslakki(props) {
   const activeColor = useColorStore((state) => state.activeColor);
   const textFrontLeft = useTextStore((state) => state.textFrontLeft);
@@ -37,7 +40,7 @@ function Ylioppilaslakki(props) {
   const font = useTextStore((state) => state.font);
   const focus = useTextStore((state) => state.focus);
   const modelRef = useRef();
-  const { camera, scene } = useThree();
+  const { camera, scene, controls } = useThree();
 
   const [customization, setCustomization] = useState({
     badge: "fi",
@@ -53,283 +56,258 @@ function Ylioppilaslakki(props) {
 
   const texture = new THREE.TextureLoader().load("/texture.jpg");
 
-  const { pos, height, rotation } = useControls({
-    //{"pos":[-0.3099999999999997,0.36000000000000065,-0.46]}
-    pos: {
-      value: [-0.600000000000002, -1, 0],
+  texture.repeat.set(0.8, 0.01);
+  texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+
+  const { pos, rotation, size, decalPos, textPos } = useControls({
+    textPos: {
+      value: [-30.499999999999986, -5.799999999999999, 0],
       step: 0.1,
     },
-    height: { value: 0.1, min: 0, max: 1, step: 0.01 },
+    pos: {
+      value: [0, 0, 150],
+      step: 0.1,
+    },
+    decalPos: {
+      value: [-0.391, 0.36, -0.46],
+      step: 0.1,
+    },
+    size: { value: 3, step: 0.01 },
     rotation: {
       value: [0, 0, 0],
       step: 0.01,
     },
   });
 
-  // useEffect(() => {
-  //   camera.rotation.set(...rotation);
-  //   camera.position.set(...pos);
-  // }, [rotation, pos]);
-
   useEffect(() => {
     if (focus === "back") {
-      console.log("back", modelRef.current.rotation.y);
-      gsap.to(modelRef.current.rotation, {
-        x: 0,
-        z: 0,
+      gsap.to(camera.rotation, {
         y: 3.14,
-      });
-      gsap.to(modelRef.current.position, {
-        x: 0,
-        z:0.2,
-        y: 0.1,
+        onStart: () => {
+          gsap.to(camera.position, {
+            z: -2,
+            x: 0,
+            y: 0,
+            duration: 1,
+          });
+        },
         duration: 1,
       });
-    }
-    else if(focus === "frontRight") {
-      console.log("fronRight", modelRef.current.rotation.y);
-      gsap.to(modelRef.current.rotation, {
-        x: 0,
-        y: -0.3,
-        z: 0,
-      });
-      gsap.to(modelRef.current.position, {
-        x:0,
-        z:0.2,
-        y: 0.1,
-        duration: 1,
-      });
-    }
-    else if(focus === "frontLeft") {
-      console.log("fronLeft", modelRef.current.rotation.y);
-      gsap.to(modelRef.current.rotation, {
-        x: 0,
-        y: 0.3,
-        z: 0,
-      });
-      gsap.to(modelRef.current.position, {
-        x:0,
-        z:0.2,
-        y: 0.1,
-        duration: 1,
-      });
-    }
-     else {
-      console.log("front", modelRef.current.rotation.y);
-      gsap.to(modelRef.current.rotation, {
-        x: 0,
+    } else {
+      gsap.to(camera.rotation, {
         y: 0,
-        z: 0,
-      });
-      gsap.to(modelRef.current.position, {
-        x: 0,
-        z:0,
-        y: 0,
+        onStart: () => {
+          gsap.to(camera.position, {
+            z: 2,
+            x: 0,
+            y: 0,
+          });
+        },
+
         duration: 1,
       });
     }
   }, [focus]);
   return (
     <group>
-      <CustomOrbitControl object={modelRef} />
- 
-    <group ref={modelRef} {...props} dispose={null}>
-      {/* decorative ribbon */}
-      <mesh
-        geometry={nodes.gold001.geometry}
-        material={materials.stribe}
-        visible={customization.roundRibbonColor === "gold"}
-      />
-      <mesh
-        geometry={nodes.silver.geometry}
-        material={materials["stribe.001"]}
-        visible={customization.roundRibbonColor === "silver"}
-      />
+      {/* <CustomOrbitControl object={modelRef} /> */}
 
-      {/* cord */}
-      <mesh
-        geometry={nodes.gold.geometry}
-        material={materials["line 1"]}
-        visible={customization.cordColor === "gold"}
-      />
-      <mesh
-        geometry={nodes.silver001.geometry}
-        material={materials["line 1.001"]}
-        visible={customization.cordColor === "silver"}
-      />
-      <mesh
-        geometry={nodes.black.geometry}
-        material={materials["line 1.002"]}
-        visible={customization.cordColor === "black"}
-      />
-
-      <mesh geometry={nodes.sloejfe.geometry} material={materials.sloejfe_m} />
-      <mesh
-        geometry={nodes.the_top_of_the_cap_.geometry}
-        material={materials["outside white"]}
-      />
-      <mesh
-        geometry={nodes.the_middle_part_.geometry}
-        material={materials["outside black"]}
-      >
-        <Decal position={[-0.391, 0.36, -0.46]} rotation={[0, 0, 0]} scale={3}>
-          <meshStandardMaterial
-            roughness={0.1}
-            transparent
-            polygonOffset
-            polygonOffsetFactor={-10}
-            position={[0, -10, 1]}
-          >
-            <RenderTexture attach='map'>
-              <PerspectiveCamera
-                makeDefault
-                manual
-                position={[0, 0, 150]}
-                rotation={[0, 0, -3.14]}
-              />
-              <ambientLight intensity={0.9} />
-              <Environment preset='city' />
-              <Text3D
-                rotation={[3.0099999999999967, -2.68, -0.029999999999999166]}
-                size={2}
-                scale={[1, 1.5, 1]}
-                height={0.15}
-                font={font}
-                position={[
-                  textFrontLeft.length < 10
-                    ? -0.6
-                    : -0.6 + (textFrontLeft.length - 9) * 1.6,
-                  1.3,
-                  0,
-                ]}
-              >
-                <meshPhysicalMaterial
-                  attach='material'
-                  metalness={0.1}
-                  roughness={1}
-                  color={activeColor?.hex}
-                  map={texture}
-                />
-                {textFrontLeft}
-              </Text3D>
-              <Text3D
-                rotation={[3.0099999999999967, -2.68, -0.1199999999999992]}
-                size={2}
-                scale={[1, 1.5, 1]}
-                height={0.15}
-                font={font}
-                position={[-25, 0.9000000000000008, -0.46]}
-              >
-                <meshPhysicalMaterial
-                  attach='material'
-                  metalness={0.1}
-                  roughness={1}
-                  color={activeColor?.hex}
-                  map={texture}
-                />
-                {textFrontRight}
-              </Text3D>
-            </RenderTexture>
-          </meshStandardMaterial>
-        </Decal>
-
-        <Decal position={[-0.391, 0.36, -0.46]} rotation={[0, 0, 0]} scale={3}>
-          <meshStandardMaterial
-            roughness={0.1}
-            transparent
-            polygonOffset
-            polygonOffsetFactor={-10}
-            position={[0, -10, 1]}
-          >
-            <RenderTexture attach='map'>
-              <PerspectiveCamera makeDefault manual position={[0, 0, 150]} />
-              <ambientLight intensity={0.9} />
-              <Environment preset='city' />
-
-              <Text3D
-                rotation={[0, -3.800000000000001, -0.04000000000000003]}
-                size={3}
-                height={0.3}
-                font={font}
-                position={[
-                  textBack.length < 12
-                    ? 25.9
-                    : 25.9 + (textBack.length - 12) * 0.7,
-
-                  -11.239999999999993,
-                  -0.46,
-                ]}
-                color='black'
-              >
-                <meshPhysicalMaterial
-                  attach='material'
-                  metalness={0.1}
-                  roughness={1}
-                  color={activeColor?.hex}
-                  map={texture}
-                />
-                {textBack}
-              </Text3D>
-            </RenderTexture>
-          </meshStandardMaterial>
-        </Decal>
-      </mesh>
-      <mesh
-        geometry={nodes.the_fornt_part.geometry}
-        material={materials["outide black 1"]}
-      />
-      <mesh
-        geometry={nodes.the_white_inside.geometry}
-        material={materials["inside white with fold"]}
-      />
-      <mesh
-        geometry={nodes.the_leather_part.geometry}
-        material={materials["inside leather"]}
-      />
-      <mesh
-        geometry={nodes.the_top_inside.geometry}
-        material={materials["inside white 1"]}
-      />
-      <mesh
-        geometry={nodes.the_line_in_the_bottom.geometry}
-        material={materials["inside black"]}
-      />
-      <mesh
-        geometry={nodes.cap_line_1.geometry}
-        material={materials["line 2"]}
-      />
-
-      {/* crystal */}
-      <group scale={0.071} visible={customization.badge === "crystal"}>
+      <group ref={modelRef} {...props} dispose={null}>
+        {/* decorative ribbon */}
         <mesh
-          geometry={nodes.Plane003.geometry}
-          material={materials["Material.003"]}
+          geometry={nodes.gold001.geometry}
+          material={materials.stribe}
+          visible={customization.roundRibbonColor === "gold"}
         />
         <mesh
-          geometry={nodes.Plane003_1.geometry}
+          geometry={nodes.silver.geometry}
+          material={materials["stribe.001"]}
+          visible={customization.roundRibbonColor === "silver"}
+        />
+
+        {/* cord */}
+        <mesh
+          geometry={nodes.gold.geometry}
+          material={materials["line 1"]}
+          visible={customization.cordColor === "gold"}
+        />
+        <mesh
+          geometry={nodes.silver001.geometry}
+          material={materials["line 1.001"]}
+          visible={customization.cordColor === "silver"}
+        />
+        <mesh
+          geometry={nodes.black.geometry}
+          material={materials["line 1.002"]}
+          visible={customization.cordColor === "black"}
+        />
+
+        <mesh
+          geometry={nodes.sloejfe.geometry}
+          material={materials.sloejfe_m}
+        />
+        <mesh
+          geometry={nodes.the_top_of_the_cap_.geometry}
+          material={materials["outside white"]}
+        />
+        <mesh
+          geometry={nodes.the_middle_part_.geometry}
+          material={materials["outside black"]}
+        >
+          <Decal
+            position={[-0.19099999999999948, 0.36, 0.640000000000005]}
+            rotation={[0, 0, -3.14]}
+            scale={1.8}
+          >
+            <meshPhysicalMaterial
+              roughness={0.1}
+              transparent
+              polygonOffset
+              polygonOffsetFactor={-1}
+              position={[0, 0, 1]}
+            >
+              <RenderTexture attach='map'>
+                <PerspectiveCamera
+                  makeDefault
+                  manual
+                  position={[0, 0, 400]}
+                  rotation={[0, 0, -3.14]}
+                />
+                <ambientLight intensity={1} />
+
+                <directionalLight intensity={1} position={[0, 0, 1]} />
+                <pointLight position={[0, 0, 1]} />
+                <Environment preset='city' />
+                <troika
+                  rotation={[0, 0, 0.07]}
+                  text={textFrontLeft}
+                  fontSize={15}
+                  size={1}
+                  color={activeColor?.hex}
+                  // invert 'y' to match react-three-fiber's coordinate system
+                  depthOffset={5}
+                  anchorX='right'
+                  font={"/Snellk.woff"}
+                  position={[15, 11, 0]}
+                >
+                  <meshStandardMaterial attach='material' map={texture} />
+                </troika>
+                <troika
+                  rotation={[0, 0, -0.06]}
+                  text={textFrontRight}
+                  fontSize={15}
+                  size={1}
+                  color={activeColor?.hex}
+                  // invert 'y' to match react-three-fiber's coordinate system
+                  depthOffset={5}
+                  anchor='center'
+                  font={"/Snellk.woff"}
+                  position={[66.39999999999979, 11, 0]}
+                >
+                  <meshStandardMaterial attach='material' map={texture} />
+                </troika>
+              </RenderTexture>
+            </meshPhysicalMaterial>
+          </Decal>
+
+          <Decal
+            position={[-0.391, 0.36, -0.46]}
+            rotation={[0, -3.14, -3.14]}
+            scale={1.8}
+          >
+            <meshPhysicalMaterial
+              roughness={0.1}
+              transparent
+              polygonOffset
+              polygonOffsetFactor={-1}
+              position={[0, 0, 1]}
+            >
+              <RenderTexture attach='map'>
+                <PerspectiveCamera
+                  makeDefault
+                  manual
+                  position={[0, 0, 400]}
+                  rotation={[0, 0, -3.14]}
+                />
+                <ambientLight intensity={1} />
+
+                <directionalLight intensity={1} position={[0, 0, 1]} />
+                <pointLight position={[0, 0, 1]} />
+                <Environment preset='city' />
+                <troika
+                  rotation={rotation}
+                  text={textBack}
+                  fontSize={15}
+                  size={1}
+                  color={activeColor?.hex}
+                  // invert 'y' to match react-three-fiber's coordinate system
+                  depthOffset={5}
+                  anchorX='center'
+                  font={"/Snellk.woff"}
+                  position={[-76.7, -35, 0]}
+                >
+                  <meshStandardMaterial attach='material' map={texture} />
+                </troika>
+              </RenderTexture>
+            </meshPhysicalMaterial>
+          </Decal>
+        </mesh>
+        <mesh
+          geometry={nodes.the_fornt_part.geometry}
+          material={materials["outide black 1"]}
+        />
+        <mesh
+          geometry={nodes.the_white_inside.geometry}
+          material={materials["inside white with fold"]}
+        />
+        <mesh
+          geometry={nodes.the_leather_part.geometry}
+          material={materials["inside leather"]}
+        />
+        <mesh
+          geometry={nodes.the_top_inside.geometry}
+          material={materials["inside white 1"]}
+        />
+        <mesh
+          geometry={nodes.the_line_in_the_bottom.geometry}
+          material={materials["inside black"]}
+        />
+        <mesh
+          geometry={nodes.cap_line_1.geometry}
+          material={materials["line 2"]}
+        />
+
+        {/* crystal */}
+        <group scale={0.071} visible={customization.badge === "crystal"}>
+          <mesh
+            geometry={nodes.Plane003.geometry}
+            material={materials["Material.003"]}
+          />
+          <mesh
+            geometry={nodes.Plane003_1.geometry}
+            material={materials["diamond.001"]}
+          />
+        </group>
+
+        {/* suomi */}
+        <mesh
+          geometry={nodes.first_002.geometry}
+          material={materials["Material.005"]}
+          visible={customization.badge === "fi"}
+        />
+
+        {/* start */}
+        <mesh
+          geometry={nodes.Diamond001.geometry}
           material={materials["diamond.001"]}
+          visible={customization.badge === "star"}
+        />
+        <mesh
+          geometry={nodes.Diamond001_1.geometry}
+          material={materials.gold}
+          visible={customization.badge === "star"}
         />
       </group>
-
-      {/* suomi */}
-      <mesh
-        geometry={nodes.first_002.geometry}
-        material={materials["Material.005"]}
-        visible={customization.badge === "fi"}
-      />
-
-      {/* start */}
-      <mesh
-        geometry={nodes.Diamond001.geometry}
-        material={materials["diamond.001"]}
-        visible={customization.badge === "star"}
-      />
-      <mesh
-        geometry={nodes.Diamond001_1.geometry}
-        material={materials.gold}
-        visible={customization.badge === "star"}
-      />
-    </group>
     </group>
   );
 }
@@ -337,96 +315,3 @@ function Ylioppilaslakki(props) {
 export default Ylioppilaslakki;
 
 useGLTF.preload("./models/cap_version_9.gltf");
-
-const CustomOrbitControl = ({ object }) => {
-  const { gl, camera } = useThree();
-  let isDragging = false;
-  const previousMouse = useRef([0, 0]);
-
-  const onMouseDown = (event) => {
-    isDragging = true;
-    previousMouse.current =
-      event.type === "touchstart"
-        ? [event.touches[0].clientX, event.touches[0].clientY]
-        : [event.clientX, event.clientY];
-  };
-
-  const onMouseUp = () => {
-    isDragging = false;
-  };
-
-  const onMouseMove = (event) => {
-    if (!isDragging) return;
-    const clientX =
-      event.type === "touchmove" ? event.touches[0].clientX : event.clientX;
-    const clientY =
-      event.type === "touchmove" ? event.touches[0].clientY : event.clientY;
-    const deltaMove = [
-      clientX - previousMouse.current[0],
-      clientY - previousMouse.current[1],
-    ];
-
-    const deltaRotationQuaternion = new THREE.Quaternion().setFromEuler(
-      new THREE.Euler(
-        toRadians(deltaMove[1]),
-        toRadians(deltaMove[0]),
-        0,
-        "XYZ"
-      )
-    );
-
-    object.current.quaternion.multiplyQuaternions(
-      deltaRotationQuaternion,
-      object.current.quaternion
-    );
-
-    previousMouse.current = [clientX, clientY];
-  };
-
-  const onWheel = (event) => {
-    // Adjust this value to control zoom speed
-    const zoomSpeed = 0.005;
-  
-    // Calculate the amount of zoom based on the mouse wheel delta
-    const deltaZoom = event.deltaY * zoomSpeed;
-  
-    
-    const newZPosition = camera.position.z - deltaZoom;
-  
-    const minZoom = 2; 
-    const maxZoom = 10; 
-  
-    
-    camera.position.z = Math.min(Math.max(newZPosition, minZoom), maxZoom);
-  };
-
-  const toRadians = (angle) => {
-    return angle * (Math.PI / 180);
-  };
-
-  useEffect(() => {
-    gl.domElement.addEventListener("mousedown", onMouseDown);
-    window.addEventListener("mouseup", onMouseUp);
-    gl.domElement.addEventListener("mousemove", onMouseMove);
-
-    gl.domElement.addEventListener("wheel", onWheel);
-
-    window.addEventListener("touchstart", onMouseDown);
-    window.addEventListener("touchend", onMouseUp);
-    window.addEventListener("touchmove", onMouseMove);
-
-    return () => {
-      gl.domElement.removeEventListener("mousedown", onMouseDown);
-      window.removeEventListener("mouseup", onMouseUp);
-      gl.domElement.removeEventListener("mousemove", onMouseMove);
-
-      gl.domElement.removeEventListener("wheel", onWheel);
-
-      window.removeEventListener("touchstart", onMouseDown);
-      window.removeEventListener("touchend", onMouseUp);
-      window.removeEventListener("touchmove", onMouseMove);
-    };
-  }, []);
-
-  return null;
-};

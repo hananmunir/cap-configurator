@@ -7,24 +7,9 @@ import { gsap } from "gsap";
 import { useTextStore } from "../Utils/textStore";
 
 const ExperienceYlioppilaslakki = () => {
-  const focus = useTextStore((state) => state.focus);
-  const modelRef = useRef();
-  useEffect(() => {
-    if (focus === "back") {
-      console.log("back");
-
-      gsap.to(modelRef?.current?.rotation, {
-        y: 3.14,
-      });
-    } else {
-      gsap.to(modelRef?.current?.rotation, {
-        y: 0,
-      });
-    }
-  }, [focus]);
   return (
     <Suspense fallback={null}>
-      {/* <OrbitControls
+      <OrbitControls
         //autoRotate
         enableDamping
         dampingFactor={0.1}
@@ -32,8 +17,9 @@ const ExperienceYlioppilaslakki = () => {
         //rotateSpeed={0.2}
         //minDistance={2} // Set minimum distance for zooming in
         maxDistance={8} // Set maximum distance for zooming out
-      /> */}
-      <Stage intensity={0.6} castShadow={false}>
+      />
+      <pointLight position={[10, 10, 10]} />
+      <Stage intensity={0.9} castShadow={false}>
         <Ylioppilaslakki />
       </Stage>
     </Suspense>

@@ -98,7 +98,7 @@ const App = () => {
             onChange={(e) =>
               useTextStore.setState({ textBack: e.target.value })
             }
-            maxLength={30}
+            maxLength={25}
             onFocus={() => setFocus("back")}
           />
         </div>
