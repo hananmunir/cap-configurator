@@ -85,11 +85,23 @@ function Ylioppilaslakki(props) {
         y: 3.14,
         onStart: () => {
           gsap.to(camera.position, {
+            z: 0,
+            x: 0,
+            y: 1.8,
+            duration: 1,
+          });
+        },
+        onComplete: () => {
+          gsap.to(camera.rotation, {
+            y: 0,
+            duration: 1,
+          })
+          gsap.to(camera.position, {
             z: -2,
             x: 0,
             y: 0,
             duration: 1,
-          });
+          })
         },
         duration: 1,
       });
@@ -98,16 +110,29 @@ function Ylioppilaslakki(props) {
         y: 0,
         onStart: () => {
           gsap.to(camera.position, {
+            z: 0,
+            x: 0,
+            y: 1.8,
+            duration: 1,
+          });
+        },
+        onComplete: () => {
+          gsap.to(camera.rotation, {
+            y: 0,
+            duration: 1,
+          })
+          gsap.to(camera.position, {
             z: 2,
             x: 0,
             y: 0,
-          });
+            duration: 1,
+          })
         },
-
         duration: 1,
       });
     }
   }, [focus]);
+
   return (
     <group>
       {/* <CustomOrbitControl object={modelRef} /> */}
