@@ -21,6 +21,7 @@ import { gsap } from "gsap";
 import { Text as Troika } from "troika-three-text";
 // Register Text as a react-three-fiber element
 extend({ Troika });
+
 function Ylioppilaslakki(props) {
   const activeColor = useColorStore((state) => state.activeColor);
   const textFrontLeft = useTextStore((state) => state.textFrontLeft);
@@ -30,6 +31,7 @@ function Ylioppilaslakki(props) {
   const focus = useTextStore((state) => state.focus);
   const modelRef = useRef();
   const { camera, scene, controls } = useThree();
+  const [isFromBack, setIsFromBack] = useState(false);
 
   const [customization, setCustomization] = useState({
     badge: "fi",
@@ -48,8 +50,9 @@ function Ylioppilaslakki(props) {
       step: 0.1,
     },
     repeat: {
-      value: [1.29, 0.12],
+      value: [0.9, 0.33],
       step: 0.01,
+      min: 0,
     },
     pos: {
       value: [0, 0, 150],
@@ -66,10 +69,11 @@ function Ylioppilaslakki(props) {
     },
   });
 
-  const texture = new THREE.TextureLoader().load("/thread4.webp");
+  const texture = new THREE.TextureLoader().load("/texture.jpg");
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(repeat[0], repeat[1]);
+  texture.anisotropy = 16;
 
   useEffect(() => {
     if (focus === "back") {
@@ -87,17 +91,16 @@ function Ylioppilaslakki(props) {
             }
           );
         },
-
         duration: 2,
       });
+      setIsFromBack(true);
     } else if (focus === "frontRight") {
       gsap.to(camera.rotation, {
         y: 0,
         onStart: () => {
-          
           gsap.fromTo(
             camera.position,
-            { y: 1.5 },
+            { y: isFromBack ? 1.2 : 0 },
             {
               z: 2,
               x: 1,
@@ -106,18 +109,17 @@ function Ylioppilaslakki(props) {
             }
           );
         },
-       
         duration: 2,
       });
-    }
-    else{
+
+      setIsFromBack(false);
+    } else {
       gsap.to(camera.rotation, {
         y: 0,
         onStart: () => {
-          
           gsap.fromTo(
             camera.position,
-            { y: 1.5 },
+            { y: isFromBack ? 1.2 : 0 },
             {
               z: 2,
               x: -1,
@@ -126,11 +128,11 @@ function Ylioppilaslakki(props) {
             }
           );
         },
-       
+
         duration: 2,
       });
+      setIsFromBack(false);
     }
-    
   }, [focus]);
 
   return (
@@ -179,13 +181,13 @@ function Ylioppilaslakki(props) {
           scale={1.8}
         >
           <meshPhysicalMaterial
-            roughness={0.1}
+            roughness={0.9}
             transparent
             polygonOffset
             polygonOffsetFactor={-1}
             position={[0, 0, 1]}
           >
-            <RenderTexture attach='map'>
+            <RenderTexture width={1500} height={1500} attach='map'>
               <PerspectiveCamera
                 makeDefault
                 manual
@@ -243,13 +245,13 @@ function Ylioppilaslakki(props) {
           scale={1.8}
         >
           <meshPhysicalMaterial
-            roughness={0.1}
+            roughness={0.9}
             transparent
             polygonOffset
             polygonOffsetFactor={-1}
             position={[0, 0, 1]}
           >
-            <RenderTexture attach='map'>
+            <RenderTexture width={1500} height={1500} attach='map'>
               <PerspectiveCamera
                 makeDefault
                 manual
@@ -273,9 +275,9 @@ function Ylioppilaslakki(props) {
                 position={[-76.7, -35, 0]}
               >
                 <meshStandardMaterial
-                  roughness={1}
+                  roughness={0.01}
                   attach='material'
-                  metalness={0.1}
+                  metalness={0.01}
                   map={texture}
                 />
               </troika>
