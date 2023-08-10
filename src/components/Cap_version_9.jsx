@@ -48,7 +48,7 @@ function Ylioppilaslakki(props) {
       step: 0.1,
     },
     repeat: {
-      value: [1, 1],
+      value: [1.29, 0.12],
       step: 0.01,
     },
     pos: {
@@ -66,10 +66,10 @@ function Ylioppilaslakki(props) {
     },
   });
 
-  const texture = new THREE.TextureLoader().load("/texture3.jpg");
+  const texture = new THREE.TextureLoader().load("/thread4.webp");
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(0.5, 0.1);
+  texture.repeat.set(repeat[0], repeat[1]);
 
   useEffect(() => {
     if (focus === "back") {
@@ -90,25 +90,47 @@ function Ylioppilaslakki(props) {
 
         duration: 2,
       });
-    } else {
+    } else if (focus === "frontRight") {
       gsap.to(camera.rotation, {
         y: 0,
         onStart: () => {
+          
           gsap.fromTo(
             camera.position,
             { y: 1.5 },
             {
               z: 2,
-              x: 0,
+              x: 1,
               y: 0,
               duration: 2,
             }
           );
         },
-
+       
         duration: 2,
       });
     }
+    else{
+      gsap.to(camera.rotation, {
+        y: 0,
+        onStart: () => {
+          
+          gsap.fromTo(
+            camera.position,
+            { y: 1.5 },
+            {
+              z: 2,
+              x: -1,
+              y: 0,
+              duration: 2,
+            }
+          );
+        },
+       
+        duration: 2,
+      });
+    }
+    
   }, [focus]);
 
   return (
