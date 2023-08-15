@@ -69,7 +69,7 @@ function Ylioppilaslakki(props) {
   });
   const { nodes, materials } = useGLTF("/models/cap_version_9.gltf");
 
-  const texture = new THREE.TextureLoader().load("/thread8.webp");
+  const texture = new THREE.TextureLoader().load("/texture.jpg");
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
   texture.repeat.set(0.9, 0.33);
