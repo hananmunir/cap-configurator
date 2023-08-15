@@ -70,10 +70,10 @@ function Ylioppilaslakki(props) {
   const { nodes, materials } = useGLTF("/models/cap_version_9.gltf");
 
   const texture = new THREE.TextureLoader().load("/texture.jpg");
-  // texture.wrapS = THREE.RepeatWrapping;
-  // texture.wrapT = THREE.RepeatWrapping;
-  // texture.repeat.set(0.9, 0.33);
-  // texture.anisotropy = 16;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(0.9, 0.33);
+  texture.anisotropy = 16;
 
   useEffect(() => {
     if (focus === "back") {
@@ -187,7 +187,7 @@ function Ylioppilaslakki(props) {
             polygonOffsetFactor={-1}
             position={[0, 0, 1]}
           >
-            <RenderTexture width={1500} height={1500} attach='map'>
+            <RenderTexture width={100} height={100} attach='map'>
               <PerspectiveCamera
                 makeDefault
                 manual
@@ -251,7 +251,7 @@ function Ylioppilaslakki(props) {
             polygonOffsetFactor={-1}
             position={[0, 0, 1]}
           >
-            <RenderTexture width={1500} height={1500} attach='map'>
+            <RenderTexture width={100} height={100} attach='map'>
               <PerspectiveCamera
                 makeDefault
                 manual
