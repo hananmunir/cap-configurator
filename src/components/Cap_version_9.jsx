@@ -22,6 +22,9 @@ import { Text as Troika } from "troika-three-text";
 // Register Text as a react-three-fiber element
 extend({ Troika });
 
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+const dimension = isIOS ? 700 : 1500;
+
 function Ylioppilaslakki(props) {
   const activeColor = useColorStore((state) => state.activeColor);
   const textFrontLeft = useTextStore((state) => state.textFrontLeft);
@@ -29,33 +32,8 @@ function Ylioppilaslakki(props) {
   const textBack = useTextStore((state) => state.textBack);
   const font = useTextStore((state) => state.font);
   const focus = useTextStore((state) => state.focus);
-  const modelRef = useRef();
-  const { camera, scene, controls } = useThree();
+  const { camera } = useThree();
   const [isFromBack, setIsFromBack] = useState(false);
-  const { pos, rotation, size, decalPos, textPos, repeat } = useControls({
-    textPos: {
-      value: [-30.499999999999986, -5.799999999999999, 0],
-      step: 0.1,
-    },
-    repeat: {
-      value: [0.9, 0.33],
-      step: 0.01,
-      min: 0,
-    },
-    pos: {
-      value: [0, 0, 150],
-      step: 0.1,
-    },
-    decalPos: {
-      value: [-0.391, 0.36, -0.46],
-      step: 0.1,
-    },
-    size: { value: 3, step: 0.01 },
-    rotation: {
-      value: [0, 0, 0],
-      step: 0.01,
-    },
-  });
 
   const [customization, setCustomization] = useState({
     badge: "fi",
@@ -67,7 +45,7 @@ function Ylioppilaslakki(props) {
     quantity: 1,
     productStorage: "",
   });
-  const { nodes, materials } = useGLTF("/models/cap_version_9.gltf");
+  const { nodes, materials } = useGLTF("/models/cap_version_9-transformed.glb");
 
   const texture = new THREE.TextureLoader().load("/texture.jpg");
   texture.wrapS = THREE.RepeatWrapping;
@@ -187,7 +165,7 @@ function Ylioppilaslakki(props) {
             polygonOffsetFactor={-1}
             position={[0, 0, 1]}
           >
-            <RenderTexture width={700} height={700} attach='map'>
+            <RenderTexture width={dimension} height={dimension} attach='map'>
               <PerspectiveCamera
                 makeDefault
                 manual
@@ -251,7 +229,7 @@ function Ylioppilaslakki(props) {
             polygonOffsetFactor={-1}
             position={[0, 0, 1]}
           >
-            <RenderTexture width={700} height={700} attach='map'>
+            <RenderTexture width={dimension} height={dimension} attach='map'>
               <PerspectiveCamera
                 makeDefault
                 manual
@@ -346,4 +324,4 @@ function Ylioppilaslakki(props) {
 
 export default Ylioppilaslakki;
 
-useGLTF.preload("./models/cap_version_9.gltf");
+useGLTF.preload("./models/cap_version_9-transformed.glb");
