@@ -16,7 +16,7 @@ import { useColorStore } from "../Utils/store";
 import { useTextStore } from "../Utils/textStore";
 
 import * as THREE from "three";
-import { useThree, useFrame, extend } from "@react-three/fiber";
+import { useThree, extend } from "@react-three/fiber";
 import { gsap } from "gsap";
 import { Text as Troika } from "troika-three-text";
 // Register Text as a react-three-fiber element
@@ -32,18 +32,6 @@ function Ylioppilaslakki(props) {
   const modelRef = useRef();
   const { camera, scene, controls } = useThree();
   const [isFromBack, setIsFromBack] = useState(false);
-
-  const [customization, setCustomization] = useState({
-    badge: "fi",
-    roundRibbonColor: "",
-    cordColor: "black",
-    embroideryTextFront: { left: "Your Text", right: "Your Text" },
-    embroideryTextBack: "Your Text",
-    size: "",
-    quantity: 1,
-    productStorage: "",
-  });
-  const { nodes, materials } = useGLTF("/models/cap_version_9-transformed.glb");
   const { pos, rotation, size, decalPos, textPos, repeat } = useControls({
     textPos: {
       value: [-30.499999999999986, -5.799999999999999, 0],
@@ -69,10 +57,22 @@ function Ylioppilaslakki(props) {
     },
   });
 
+  const [customization, setCustomization] = useState({
+    badge: "fi",
+    roundRibbonColor: "",
+    cordColor: "black",
+    embroideryTextFront: { left: "Your Text", right: "Your Text" },
+    embroideryTextBack: "Your Text",
+    size: "",
+    quantity: 1,
+    productStorage: "",
+  });
+  const { nodes, materials } = useGLTF("/models/cap_version_9.gltf");
+
   const texture = new THREE.TextureLoader().load("/texture.jpg");
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat.set(repeat[0], repeat[1]);
+  texture.repeat.set(0.9, 0.33);
   texture.anisotropy = 16;
 
   useEffect(() => {
@@ -176,7 +176,7 @@ function Ylioppilaslakki(props) {
         material={materials["outside black"]}
       >
         <Decal
-          position={[-0.19099999999999948, 0.36, 0.640000000000005]}
+          position={[-0.19, 0.36, 0.64]}
           rotation={[0, 0, -3.14]}
           scale={1.8}
         >
@@ -346,4 +346,4 @@ function Ylioppilaslakki(props) {
 
 export default Ylioppilaslakki;
 
-useGLTF.preload("./models/cap_version_9-transformed.glb");
+useGLTF.preload("./models/cap_version_9.gltf");
