@@ -187,7 +187,7 @@ function Ylioppilaslakki(props) {
             polygonOffsetFactor={-1}
             position={[0, 0, 1]}
           >
-            <RenderTexture width={100} height={100} attach='map'>
+            <RenderTexture width={700} height={700} attach='map'>
               <PerspectiveCamera
                 makeDefault
                 manual
@@ -251,7 +251,7 @@ function Ylioppilaslakki(props) {
             polygonOffsetFactor={-1}
             position={[0, 0, 1]}
           >
-            <RenderTexture width={100} height={100} attach='map'>
+            <RenderTexture width={700} height={700} attach='map'>
               <PerspectiveCamera
                 makeDefault
                 manual
